@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>挤出设备 1-3号 产能占用时间轴</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Noto Sans SC', 'Segoe UI', system-ui, sans-serif; background: #0F172A; color: #E2E8F0; padding: 24px; min-height: 100vh; }
+
+  .header { margin-bottom: 28px; }
+  .header-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .header-accent { width: 4px; height: 32px; background: linear-gradient(to bottom, #3B82F6, #8B5CF6); border-radius: 2px; }
+  .header h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.02em; }
+  .header-sub { font-size: 12px; color: #94A3B8; margin-left: 16px; display: flex; gap: 24px; flex-wrap: wrap; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; padding: 12px 16px; background: #1E293B; border-radius: 8px; border: 1px solid #334155; align-items: center; }
+  .legend-label { font-size: 11px; color: #94A3B8; margin-right: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 4px; padding: 3px 8px; background: #0F172A; border-radius: 4px; font-size: 11px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+  .legend-order { color: #CBD5E1; }
+  .legend-cust { font-size: 10px; color: #64748B; }
+
+  .gantt { background: #1E293B; border-radius: 12px; border: 1px solid #334155; overflow: hidden; }
+  .machine-section { border-bottom: 1px solid #334155; }
+  .machine-section:last-child { border-bottom: none; }
+
+  .machine-header { display: flex; height: 48px; border-bottom: 1px solid #334155; }
+  .machine-label { width: 110px; min-width: 110px; display: flex; align-items: center; justify-content: center; background: #0F172A; border-right: 1px solid #334155; }
+  .machine-name { font-size: 16px; font-weight: 700; }
+  .machine-name-vi { font-size: 10px; color: #64748B; }
+  .week-header { flex: 1; position: relative; background: #0F172A; overflow: hidden; }
+  .week-mark { position: absolute; top: 0; height: 48px; display: flex; flex-direction: column; justify-content: center; padding-left: 4px; }
+  .week-date { font-size: 10px; color: #94A3B8; white-space: nowrap; }
+  .week-num { font-size: 9px; color: #475569; white-space: nowrap; }
+
+  .chart-area { display: flex; }
+  .row-labels { width: 110px; min-width: 110px; background: #0F172A; border-right: 1px solid #334155; }
+  .row-label { height: 52px; display: flex; flex-direction: column; justify-content: center; padding: 0 8px; border-bottom: 1px solid #1E293B; }
+  .row-order { font-size: 10px; font-weight: 600; color: #E2E8F0; }
+  .row-cust { font-size: 9px; color: #64748B; }
+  .row-status { font-size: 9px; }
+  .status-actual { color: #22C55E; }
+  .status-plan { color: #60A5FA; }
+
+  .bars-area { flex: 1; position: relative; overflow: hidden; }
+  .grid-line { position: absolute; top: 0; bottom: 0; width: 1px; background: #1E293B; }
+  .today-line { position: absolute; top: 0; bottom: 0; width: 2px; background: #EF4444; z-index: 10; opacity: 0.7; }
+  .today-label { position: absolute; top: -2px; left: -16px; font-size: 9px; color: #EF4444; white-space: nowrap; font-weight: 700; }
+
+  .bar { position: absolute; border-radius: 6px; cursor: pointer; display: flex; align-items: center; overflow: hidden; transition: all 0.15s ease; }
+  .bar:hover { transform: scale(1.03); z-index: 20 !important; }
+  .bar-progress { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px 0 0 4px; }
+  .bar-content { position: relative; z-index: 2; padding: 0 6px; display: flex; align-items: center; gap: 4px; width: 100%; overflow: hidden; }
+  .bar-pulse { width: 6px; height: 6px; border-radius: 50%; background: #FFF; flex-shrink: 0; animation: pulse 2s infinite; }
+  .bar-order { font-size: 10px; font-weight: 700; color: #FFF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+  .bar-type { font-size: 9px; color: rgba(255,255,255,0.7); white-space: nowrap; }
+
+  .tooltip { position: fixed; background: #1E293B; border: 1px solid #475569; border-radius: 10px; padding: 14px 16px; z-index: 1000; min-width: 260px; max-width: 340px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); pointer-events: none; display: none; }
+  .tooltip.show { display: block; }
+  .tooltip-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .tooltip-order { font-size: 14px; font-weight: 700; color: #F1F5F9; }
+  .tooltip-badge { font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+  .tooltip-grid { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 11px; }
+  .tooltip-key { color: #64748B; }
+  .tooltip-val { color: #CBD5E1; }
+  .tooltip-val.small { font-size: 10px; }
+  .progress-bar { flex: 1; height: 6px; background: #334155; border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 3px; }
+  .progress-wrap { display: flex; align-items: center; gap: 6px; }
+
+  .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
+  .card { background: #1E293B; border-radius: 10px; padding: 16px; }
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .card-title { font-size: 14px; font-weight: 700; }
+  .card-subtitle { font-size: 11px; color: #64748B; }
+  .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px; }
+  .card-stat { background: #0F172A; padding: 8px; border-radius: 6px; text-align: center; }
+  .card-stat.wide { grid-column: span 2; }
+  .stat-label { color: #64748B; margin-bottom: 2px; }
+  .stat-value { font-size: 18px; font-weight: 700; color: #E2E8F0; }
+  .stat-sub { font-size: 9px; color: #475569; }
+
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  @media (max-width: 768px) {
+    body { padding: 12px; }
+    .summary { grid-template-columns: 1fr; }
+    .legend { gap: 4px; padding: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-bar">
+    <div class="header-accent"></div>
+    <h1>挤出设备 1-3号 产能占用时间轴</h1>
+  </div>
+  <div class="header-sub">
+    <span>Extrusion Machine Utilization Timeline</span>
+    <span>数据日期 Data Date: 2026-03-06</span>
+    <span>⬛ 实际生产 = 已投产 &nbsp;|&nbsp; ⬜ 计划排产 = 未投产</span>
+  </div>
+</div>
+
+<div class="legend" id="legend"></div>
+<div class="gantt" id="gantt"></div>
+<div class="tooltip" id="tooltip"></div>
+<div class="summary" id="summary"></div>
+
+<script>
+const DATA = [
+  { machine:1, order:"X000522", customer:"WG0509", type:"实际", start:"2026-03-06", end:"2026-03-09", products:"02-1035-50-AF-A9 G2511-26", qty:4625, items:1, progress:0.39 },
+  { machine:1, order:"X000592", customer:"WH0460", type:"实际", start:"2026-03-10", end:"2026-03-25", products:"TT-4; TT-5-BLUE; TT-5-CLEAR GREY", qty:7200, items:3, progress:0.67 },
+  { machine:1, order:"X000785", customer:"WH0455", type:"计划", start:"2026-03-26", end:"2026-04-22", products:"REM1OUSVLHD", qty:51804, items:1, progress:null },
+  { machine:2, order:"X000592", customer:"WH0460", type:"实际", start:"2026-03-05", end:"2026-03-22", products:"TT-1; TTHD-5850; TT-3", qty:7200, items:3, progress:0.70 },
+  { machine:2, order:"X000785", customer:"WH0455", type:"计划", start:"2026-03-23", end:"2026-04-24", products:"YRE1OUSVL; REM1OULPS", qty:62832, items:2, progress:0.50 },
+  { machine:3, order:"X000591", customer:"WH0460", type:"计划", start:"2026-03-01", end:"2026-03-05", products:"TTFGH-50 GREEN/DARK GREEN/BLUE", qty:7200, items:3, progress:1.0 },
+  { machine:3, order:"X000646", customer:"D0383", type:"实际", start:"2026-03-07", end:"2026-03-10", products:"730-PVC-14B2", qty:1836, items:2, progress:0.50 },
+  { machine:3, order:"X000655", customer:"D0383", type:"计划", start:"2026-03-10", end:"2026-03-16", products:"730-PVC-14B2", qty:2473, items:4, progress:1.0 },
+  { machine:3, order:"X000727", customer:"DH0395", type:"计划", start:"2026-03-15", end:"2026-03-21", products:"4.24.00037/39/07/10.Y126", qty:3400, items:4, progress:1.0 },
+  { machine:3, order:"X000767", customer:"DH0395", type:"计划", start:"2026-03-21", end:"2026-03-22", products:"4.24.00007.Y126", qty:1200, items:2, progress:1.0 },
+  { machine:3, order:"X000755", customer:"DH0395", type:"计划", start:"2026-03-22", end:"2026-03-25", products:"4.24.00037/39.Y126.C001", qty:2200, items:2, progress:1.0 },
+  { machine:3, order:"X000656", customer:"D0383", type:"计划", start:"2026-03-25", end:"2026-04-11", products:"730-PVC-J15A", qty:8998, items:7, progress:0.83 },
+  { machine:3, order:"X00761", customer:"WW0531", type:"计划", start:"2026-04-12", end:"2026-05-22", products:"67419/24 900016", qty:11088, items:1, progress:0.0 },
+];
+
+const COLORS = {
+  "X000522":{bg:"#3B82F6",bd:"#2563EB"},"X000592":{bg:"#F59E0B",bd:"#D97706"},
+  "X000785":{bg:"#8B5CF6",bd:"#7C3AED"},"X000591":{bg:"#10B981",bd:"#059669"},
+  "X000646":{bg:"#EF4444",bd:"#DC2626"},"X000655":{bg:"#EC4899",bd:"#DB2777"},
+  "X000656":{bg:"#06B6D4",bd:"#0891B2"},"X000727":{bg:"#F97316",bd:"#EA580C"},
+  "X000755":{bg:"#14B8A6",bd:"#0D9488"},"X000767":{bg:"#6366F1",bd:"#4F46E5"},
+  "X00761":{bg:"#A855F7",bd:"#9333EA"},
+};
+
+const MCOLORS = { 1:"#3B82F6", 2:"#F59E0B", 3:"#10B981" };
+
+function pD(s){ return new Date(s+"T00:00:00"); }
+function dB(a,b){ return Math.round((b-a)/864e5); }
+function fD(d){ return (d.getMonth()+1)+"/"+d.getDate(); }
+
+const today = pD("2026-03-06");
+const allS = DATA.map(d=>pD(d.start)), allE = DATA.map(d=>pD(d.end));
+const tStart = new Date(Math.min(...allS)); tStart.setDate(tStart.getDate()-2);
+const tEnd = new Date(Math.max(...allE)); tEnd.setDate(tEnd.getDate()+3);
+const totalD = dB(tStart, tEnd);
+function pct(d){ return (dB(tStart,d)/totalD*100); }
+
+const weeks=[];
+{ let d=new Date(tStart); while(d.getDay()!==1)d.setDate(d.getDate()+1); while(d<tEnd){weeks.push(new Date(d));d.setDate(d.getDate()+7);} }
+
+// Legend
+{
+  const el=document.getElementById("legend");
+  let h='<span class="legend-label">订单色标:</span>';
+  const seen=new Set();
+  DATA.forEach(d=>{
+    if(seen.has(d.order))return; seen.add(d.order);
+    const c=COLORS[d.order]||{bg:"#6B7280",bd:"#4B5563"};
+    h+=`<div class="legend-item" style="border:1px solid ${c.bd}"><div class="legend-dot" style="background:${c.bg}"></div><span class="legend-order">${d.order}</span><span class="legend-cust">(${d.customer})</span></div>`;
+  });
+  el.innerHTML=h;
+}
+
+// Gantt
+{
+  const el=document.getElementById("gantt");
+  let h='';
+  [1,2,3].forEach((m,mi)=>{
+    const blocks=DATA.filter(d=>d.machine===m).sort((a,b)=>pD(a.start)-pD(b.start));
+    const ROW=52, chartH=Math.max(blocks.length*ROW+12,ROW+12);
+    h+=`<div class="machine-section">`;
+    h+=`<div class="machine-header"><div class="machine-label"><div style="text-align:center"><div class="machine-name" style="color:${MCOLORS[m]}">${m}号机</div><div class="machine-name-vi">Máy ${m}</div></div></div><div class="week-header">`;
+    if(mi===0) weeks.forEach(w=>{
+      h+=`<div class="week-mark" style="left:${pct(w)}%"><div class="week-date">${w.getMonth()+1}月${w.getDate()}日</div><div class="week-num">W${Math.ceil(w.getDate()/7)}</div></div>`;
+    });
+    h+=`</div></div>`;
+    h+=`<div class="chart-area" style="min-height:${chartH}px"><div class="row-labels">`;
+    blocks.forEach(b=>{
+      const isA=b.type==="实际";
+      h+=`<div class="row-label"><div class="row-order">${b.order}</div><div class="row-cust">${b.customer}</div><div class="row-status ${isA?'status-actual':'status-plan'}">${isA?'● 生产中':'○ 计划'}</div></div>`;
+    });
+    h+=`</div><div class="bars-area" style="min-height:${chartH}px">`;
+    weeks.forEach(w=>{ h+=`<div class="grid-line" style="left:${pct(w)}%"></div>`; });
+    h+=`<div class="today-line" style="left:${pct(today)}%"><div class="today-label">今天</div></div>`;
+    blocks.forEach((b,i)=>{
+      const c=COLORS[b.order]||{bg:"#6B7280",bd:"#4B5563"};
+      const isA=b.type==="实际";
+      const left=pct(pD(b.start)), width=Math.max(pct(pD(b.end))-left,0.8);
+      const bgStyle=isA?`linear-gradient(135deg,${c.bg},${c.bd})`:`repeating-linear-gradient(135deg,${c.bg}22,${c.bg}22 4px,${c.bg}44 4px,${c.bg}44 8px)`;
+      h+=`<div class="bar" data-idx="${DATA.indexOf(b)}" style="left:${left}%;width:${width}%;top:${i*ROW+8}px;height:${ROW-16}px;border:2px solid ${c.bd};background:${bgStyle};z-index:8;box-shadow:0 2px 4px rgba(0,0,0,0.3);">`;
+      if(b.progress!==null && b.progress<1){
+        h+=`<div class="bar-progress" style="width:${b.progress*100}%;background:${c.bg}88"></div>`;
+      }
+      h+=`<div class="bar-content">${isA?'<div class="bar-pulse"></div>':''}<span class="bar-order">${b.order}</span><span class="bar-type">${isA?'生产中':'计划'}</span></div></div>`;
+    });
+    h+=`</div></div></div>`;
+  });
+  el.innerHTML=h;
+}
+
+// Tooltip
+{
+  const tip=document.getElementById("tooltip");
+  document.querySelectorAll(".bar").forEach(bar=>{
+    bar.addEventListener("mousemove",e=>{
+      const d=DATA[+bar.dataset.idx];
+      const isA=d.type==="实际";
+      const days=dB(pD(d.start),pD(d.end));
+      let ph='';
+      if(d.progress!==null){
+        const pColor=d.progress>=1?"#22C55E":"#F59E0B";
+        ph=`<span class="tooltip-key">完成进度</span><div class="progress-wrap"><div class="progress-bar"><div class="progress-fill" style="width:${d.progress*100}%;background:${pColor}"></div></div><span class="tooltip-val">${Math.round(d.progress*100)}%</span></div>`;
+      }
+      tip.innerHTML=`
+        <div class="tooltip-header">
+          <div class="tooltip-order">${d.order}</div>
+          <div class="tooltip-badge" style="background:${isA?'#22C55E22':'#3B82F622'};color:${isA?'#22C55E':'#3B82F6'}">${isA?'● 实际生产':'○ 计划排产'}</div>
+        </div>
+        <div class="tooltip-grid">
+          <span class="tooltip-key">客户编号</span><span class="tooltip-val">${d.customer}</span>
+          <span class="tooltip-key">产品</span><span class="tooltip-val small">${d.products}</span>
+          <span class="tooltip-key">投产日期</span><span class="tooltip-val">${d.start}</span>
+          <span class="tooltip-key">完成日期</span><span class="tooltip-val">${d.end}</span>
+          <span class="tooltip-key">排产周期</span><span class="tooltip-val">${days} 天</span>
+          <span class="tooltip-key">订单数量</span><span class="tooltip-val">${d.qty.toLocaleString()} (${d.items}个货号)</span>
+          ${ph}
+        </div>`;
+      tip.classList.add("show");
+      tip.style.left=(e.clientX+16)+"px";
+      tip.style.top=(e.clientY-10)+"px";
+    });
+    bar.addEventListener("mouseleave",()=>{ tip.classList.remove("show"); });
+  });
+}
+
+// Summary
+{
+  const el=document.getElementById("summary");
+  let h='';
+  [1,2,3].forEach(m=>{
+    const blocks=DATA.filter(d=>d.machine===m);
+    const aC=blocks.filter(d=>d.type==="实际").length, pC=blocks.length-aC;
+    const starts=blocks.map(d=>pD(d.start)), ends=blocks.map(d=>pD(d.end));
+    const earliest=new Date(Math.min(...starts)), latest=new Date(Math.max(...ends));
+    const span=dB(earliest,latest);
+    const busy=blocks.reduce((s,b)=>s+dB(pD(b.start),pD(b.end)),0);
+    const util=span>0?Math.min(busy/span*100,100):0;
+    const accent=MCOLORS[m];
+    h+=`<div class="card" style="border:1px solid ${accent}33">
+      <div class="card-header"><span class="card-title" style="color:${accent}">${m}号挤出机</span><span class="card-subtitle">Máy ép đùn ${m}</span></div>
+      <div class="card-grid">
+        <div class="card-stat"><div class="stat-label">生产单</div><div class="stat-value">${blocks.length}</div><div class="stat-sub">实际${aC} / 计划${pC}</div></div>
+        <div class="card-stat"><div class="stat-label">占用率</div><div class="stat-value" style="color:${util>90?'#EF4444':accent}">${Math.round(util)}%</div><div class="stat-sub">${busy}天/${span}天</div></div>
+        <div class="card-stat wide"><div class="stat-label">排产时间跨度</div><div style="font-size:13px;font-weight:600;color:#E2E8F0">${fD(earliest)} — ${fD(latest)}</div><div class="stat-sub">共 ${span} 天</div></div>
+      </div>
+    </div>`;
+  });
+  el.innerHTML=h;
+}
+</script>
+</body>
+</html>
