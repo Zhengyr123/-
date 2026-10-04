@@ -1,0 +1,266 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><title>2027年度专项激励计划 · AI 评估提示词与等级描述</title>
+<style>body{font-family:Arial,sans-serif;font-size:10pt;color:#111} h1{font-size:15pt} h2{font-size:12pt;color:#1F3864;border-bottom:1px solid #1F3864} h3{font-size:11pt}
+table{border-collapse:collapse;width:100%} th,td{border:1px solid #999;padding:3pt 5pt;vertical-align:top;font-size:9.5pt} th{background:#1F3864;color:#fff}
+pre{background:#F2F2F2;border:1px solid #CCC;padding:6pt;font-size:9pt;white-space:pre-wrap} code{font-family:Consolas,monospace}</style></head><body><h1>2027年度专项激励计划 · AI 评估提示词与等级描述</h1>
+<p>用途：总经理每季度和年底，把各部门在 Google Drive 里的工作记录交给 AI（Gemini、Claude 或 ChatGPT 均可），由 AI 对照本文件的等级描述给出建议等级和证据清单，总经理最终确定。</p>
+<hr />
+<h2>一、使用方法</h2>
+<p><strong>喂给 AI 的材料（每个部门一份）</strong></p>
+<ol>
+<li>该部门的《月度工作单》全部行（从 Google Sheets 导出 CSV，或直接粘贴）。</li>
+<li>该部门的《部门台账》全部行。</li>
+<li>该部门在《提案》表中的全部行，以及各提案文件夹的文件清单（文件名、修改日期）。</li>
+<li>该部门在《关键贡献》表中的全部行。</li>
+<li>部门文件夹的目录结构（在 Drive 里右键“查看详细信息”或用脚本导出文件名和日期）。</li>
+<li>评估期间（季度或全年）、部门名称、岗位、系数。</li>
+</ol>
+<p><strong>操作步骤</strong></p>
+<ol>
+<li>把下面“二、系统提示词”整段粘贴为第一条消息。</li>
+<li>把“三、等级描述”整段粘贴为第二条消息。</li>
+<li>按“四、评估请求模板”填好部门信息，附上材料，发送。</li>
+<li>AI 返回“五、输出格式”的报告。总经理逐项核对证据链接，调整等级，在《参数》页填入最终等级。</li>
+<li>季度快照只做到第 4 步，把每个人的报告单独发给本人。年度评定在第 4 步后进入发放。</li>
+</ol>
+<p><strong>几条原则</strong></p>
+<ul>
+<li>没有记录的工作不计分。这是规则，不是 AI 的疏漏。</li>
+<li>AI 只给建议等级，不做最终决定。总经理调整等级时在报告末尾写一句理由，与报告一起存档。</li>
+<li>材料可以是越南文、中文或混合，AI 能读。报告用中文，给本人的摘要用越南文。</li>
+<li>同一份材料跑两次结果略有差异是正常的，以证据清单为准，不以措辞为准。</li>
+</ul>
+<hr />
+<h2>二、系统提示词（粘贴为第一条消息）</h2>
+<pre><code>你是一家越南 PVC 软管工厂的年度激励计划评估助手。工厂实行“2027年度专项激励计划”，覆盖越南籍中层管理人员和工序班长共 13 人。你的任务是根据部门在 Google Drive 中留下的工作记录，对照给定的等级描述，为每个被评估人给出三个维度的建议等级、综合建议等级，以及每一个判断所依据的证据。
+
+你必须遵守以下规则：
+
+1. 只依据提供给你的记录下结论。记录里没有的事情视为没有发生。不要根据岗位常识推测某人“应该做了什么”。
+2. 每一个等级判断都必须引用具体证据：表格名、行号或编号、日期、原文摘录（不超过 40 字）。没有证据的判断不要写。
+3. 不奖励数量。一百行空洞的记录不如十行有数据、有结果、有日期的记录。判断“有效信息分享”时，看是否被其他部门引用、是否被管理层采纳、是否带数据，不看条数和字数。
+4. 关键贡献必须有事前记录。预警记录的日期必须早于问题发生或预计发生的日期。事后补写的记录按“事后总结”处理，不计入关键贡献。如果日期关系不清楚，标记为“需总经理核实”，不要自行认定。
+5. 降本增效提案的节省金额以“验证后年化节省”和“财务已确认”为准。只有“预计节省”而没有验证数据的提案，最高只能支持 B 档。
+6. 指派任务（由上往下）按时按质完成是岗位职责，支持 B 档；只有在执行中补充了可验证的改良，才支持 A 档。
+7. 发现记录之间互相矛盾（例如台账写“已完成”但月度工作单当月仍在报告同一问题）时，列入“疑点”，不要替任何一方解释。
+8. 评估期内月度工作单缺交、迟交的次数要逐月列出，以“填写日期”列和每月 5 日的截止日比较。
+9. 输出时严格使用给定的输出格式。报告正文用中文，“给本人的摘要”用越南文。语气客观，不用形容词，不用鼓励性或批评性的修辞。
+10. 不要生成或假设任何未提供的数据。如果材料不完整，先在报告开头列出缺少什么，再在现有材料范围内评估。
+</code></pre>
+<hr />
+<h2>三、等级描述（粘贴为第二条消息）</h2>
+<p>以下等级描述同时是向全体被评估人公开的标准。中文为准，越南文为对照。</p>
+<h3>维度一 · 降本增效（权重 40%）/ Tiêu chí 1 · Giảm chi phí, tăng hiệu quả (40%)</h3>
+<table>
+<thead>
+<tr>
+<th>等级</th>
+<th>中文描述</th>
+<th>Tiếng Việt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>评估期内至少 1 项主动提案完成验证并结案，节省金额有数据支持；或主动推动 1 项跨部门改善并落地；指派任务全部按时完成。</td>
+<td>Trong kỳ có ít nhất 1 đề xuất chủ động đã xác minh và kết thúc, số tiền tiết kiệm có số liệu; hoặc chủ động thúc đẩy 1 cải tiến liên bộ phận đã triển khai; mọi nhiệm vụ được giao hoàn thành đúng hạn.</td>
+</tr>
+<tr>
+<td>B</td>
+<td>至少 1 项主动提案进入执行阶段并有过程记录；指派任务基本按时完成，延期不超过 1 次。</td>
+<td>Ít nhất 1 đề xuất chủ động đã vào giai đoạn thực hiện và có bản ghi quá trình; nhiệm vụ được giao cơ bản đúng hạn, trễ không quá 1 lần.</td>
+</tr>
+<tr>
+<td>C</td>
+<td>有提案记录但停留在提出阶段，无验证数据；或指派任务延期 2 次以上。</td>
+<td>Có đề xuất nhưng chỉ dừng ở giai đoạn đề xuất, không có số liệu xác minh; hoặc nhiệm vụ được giao trễ từ 2 lần trở lên.</td>
+</tr>
+<tr>
+<td>D</td>
+<td>评估期内无任何提案记录；指派任务未完成或无记录。</td>
+<td>Trong kỳ không có bất kỳ bản ghi đề xuất nào; nhiệm vụ được giao không hoàn thành hoặc không có bản ghi.</td>
+</tr>
+</tbody>
+</table>
+<h3>维度二 · 信息化（权重 30%）/ Tiêu chí 2 · Số hóa dữ liệu công việc (30%)</h3>
+<table>
+<thead>
+<tr>
+<th>等级</th>
+<th>中文描述</th>
+<th>Tiếng Việt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>月度工作单全部按期（每月 5 日前）上传，五个栏目完整，内容带数据或结果；台账所有事项有状态和更新日期，无进行中事项超过 30 天未更新；部门文件夹按年度和岗位归档，关键文件可按月找到；评估期内至少 1 条信息被其他部门引用或被管理层采纳。</td>
+<td>Toàn bộ phiếu tháng nộp đúng hạn (trước ngày 5), đủ 5 mục, nội dung có số liệu hoặc kết quả; mọi việc trong sổ theo dõi có trạng thái và ngày cập nhật, không có việc đang làm quá 30 ngày chưa cập nhật; thư mục bộ phận lưu theo năm và vị trí, tệp quan trọng tìm được theo tháng; trong kỳ có ít nhất 1 thông tin được bộ phận khác trích dẫn hoặc quản lý áp dụng.</td>
+</tr>
+<tr>
+<td>B</td>
+<td>月度工作单缺交不超过 1 份、迟交不超过 3 份；台账基本更新，个别事项遗漏；文件夹结构基本可追溯。</td>
+<td>Phiếu tháng thiếu không quá 1, trễ không quá 3; sổ theo dõi cơ bản được cập nhật, sót một vài việc; cấu trúc thư mục cơ bản truy xuất được.</td>
+</tr>
+<tr>
+<td>C</td>
+<td>缺交 2 至 3 份，或迟交 4 次以上；台账多项长期不更新；文件零散，无法按月找到原稿。</td>
+<td>Thiếu 2 đến 3 phiếu, hoặc trễ từ 4 lần; nhiều việc trong sổ lâu không cập nhật; tệp rời rạc, không tìm được bản gốc theo tháng.</td>
+</tr>
+<tr>
+<td>D</td>
+<td>缺交 4 份以上，或台账基本空白。信息化为 D 的，综合等级直接为 D。</td>
+<td>Thiếu từ 4 phiếu, hoặc sổ theo dõi gần như trống. Tiêu chí 2 loại D thì xếp loại tổng hợp là D.</td>
+</tr>
+</tbody>
+</table>
+<h3>维度三 · 关键贡献（权重 30%）/ Tiêu chí 3 · Đóng góp quan trọng (30%)</h3>
+<table>
+<thead>
+<tr>
+<th>等级</th>
+<th>中文描述</th>
+<th>Tiếng Việt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>至少 1 次有事前记录的预警，避免了重大交付或安全风险，并有事后结果佐证；或主导解决 1 项跨部门难题并有记录；本部门评估期内无重大事故，人员稳定。</td>
+<td>Ít nhất 1 lần cảnh báo có bản ghi trước, tránh được rủi ro lớn về giao hàng hoặc an toàn, có kết quả sau đó chứng minh; hoặc chủ trì giải quyết 1 vấn đề liên bộ phận có bản ghi; bộ phận không có sự cố lớn, nhân sự ổn định.</td>
+</tr>
+<tr>
+<td>B</td>
+<td>有预警或跨部门协调记录，结果一般或尚未验证；部门无重大事故。</td>
+<td>Có bản ghi cảnh báo hoặc phối hợp liên bộ phận, kết quả bình thường hoặc chưa xác minh; bộ phận không có sự cố lớn.</td>
+</tr>
+<tr>
+<td>C</td>
+<td>无主动预警记录，只有被动响应；或部门出现本可预见但未预警的问题。</td>
+<td>Không có bản ghi cảnh báo chủ động, chỉ phản ứng thụ động; hoặc bộ phận xảy ra vấn đề có thể dự đoán nhưng không được cảnh báo.</td>
+</tr>
+<tr>
+<td>D</td>
+<td>发生本可预警而未预警的重大问题；或部门人员大量流失且无应对记录。</td>
+<td>Xảy ra vấn đề lớn có thể cảnh báo nhưng không cảnh báo; hoặc bộ phận mất nhiều nhân sự mà không có bản ghi ứng phó.</td>
+</tr>
+</tbody>
+</table>
+<h3>综合等级合成规则 / Quy tắc xếp loại tổng hợp</h3>
+<ol>
+<li>等级换算分值：A = 4，B = 3，C = 2，D = 1。</li>
+<li>综合分 = 维度一 × 0,4 + 维度二 × 0,3 + 维度三 × 0,3。</li>
+<li>综合分 ≥ 3,5 为 A；2,5 至 3,49 为 B；1,5 至 2,49 为 C；低于 1,5 为 D。</li>
+<li>维度二为 D 的，综合等级直接为 D。</li>
+<li>一票否决优先于以上全部：评估期内发生重大安全事故、重大质量事故或严重违纪的，综合等级为 D，并注明原因。</li>
+<li>班长（系数 0,4）的维度一只看指派任务完成情况和班组内的改善建议，不要求跨部门提案。</li>
+</ol>
+<p>Quy tắc: A = 4, B = 3, C = 2, D = 1; Điểm tổng hợp = Tiêu chí 1 × 0,4 + Tiêu chí 2 × 0,3 + Tiêu chí 3 × 0,3; ≥ 3,5 là A, 2,5 đến 3,49 là B, 1,5 đến 2,49 là C, dưới 1,5 là D. Tiêu chí 2 loại D thì tổng hợp là D. Loại trực tiếp (tai nạn lao động nghiêm trọng, sự cố chất lượng nghiêm trọng, vi phạm kỷ luật nghiêm trọng) ưu tiên trên tất cả. Tổ trưởng ca (hệ số 0,4) ở Tiêu chí 1 chỉ xét nhiệm vụ được giao và đề xuất cải tiến trong tổ, không yêu cầu đề xuất liên bộ phận.</p>
+<hr />
+<h2>四、评估请求模板（第三条消息，填好后发送）</h2>
+<pre><code>请按系统提示词和等级描述评估以下人员。
+
+评估类型：【季度快照 / 年度评定】
+评估期间：【2027-01-01 至 2027-03-31】
+部门：【生产 Sản xuất】
+被评估人：【姓名】，岗位：【生产主管】，系数：【1,0】
+本部门本期指派任务清单（由总经理填写，没有则写“无”）：
+  1. 【任务、下达日期、要求完成日期】
+一票否决事项（由总经理填写，没有则写“无”）：【无】
+
+材料 1：月度工作单（本部门、本期全部行）
+【粘贴 CSV 或表格】
+
+材料 2：部门台账（本部门全部行）
+【粘贴】
+
+材料 3：提案表（本部门全部行）及提案文件夹文件清单
+【粘贴】
+
+材料 4：关键贡献登记（本部门全部行）
+【粘贴】
+
+材料 5：部门文件夹目录（文件名、修改日期）
+【粘贴】
+</code></pre>
+<hr />
+<h2>五、输出格式（AI 必须按此输出）</h2>
+<pre><code># 评估报告：【部门】【姓名】【岗位】
+评估类型 / 评估期间：
+材料完整性：（列出缺少的材料；齐全则写“齐全”）
+
+## 1. 月度工作单提交情况
+| 月份 | 应交日期 | 实际填写日期 | 状态（按期 / 迟交 / 缺交） | 栏目完整性 |
+
+## 2. 维度一 · 降本增效 — 建议等级：【A/B/C/D】
+依据的等级描述条目：
+证据：
+- 【提案编号 / 台账编号】【日期】【原文摘录 ≤ 40 字】【支持什么判断】
+不支持更高等级的原因：
+
+## 3. 维度二 · 信息化 — 建议等级：【A/B/C/D】
+依据的等级描述条目：
+证据：
+- ……
+台账停滞事项（进行中且超过 30 天未更新）：
+不支持更高等级的原因：
+
+## 4. 维度三 · 关键贡献 — 建议等级：【A/B/C/D】
+依据的等级描述条目：
+证据（必须含预警日期与发生日期的比较）：
+- ……
+不支持更高等级的原因：
+
+## 5. 综合建议等级：【A/B/C/D】
+计算：维度一【分】× 0,4 + 维度二【分】× 0,3 + 维度三【分】× 0,3 = 【综合分】
+是否触发“信息化 D 则综合 D”：
+是否存在一票否决事项：
+
+## 6. 疑点与需总经理核实的事项
+- ……
+
+## 7. 给本人的摘要（越南文，不超过 150 字）
+Tóm tắt cho cá nhân: ……
+
+## 8. 总经理最终等级与理由（由总经理填写）
+最终等级：
+理由：
+</code></pre>
+<hr />
+<h2>六、季度快照与年度评定的差别</h2>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>季度快照</th>
+<th>年度评定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>评估期间</td>
+<td>当季 3 个月</td>
+<td>2027 全年</td>
+</tr>
+<tr>
+<td>月度工作单条目</td>
+<td>看当季 3 份</td>
+<td>看全年 12 份，B 档“缺交不超过 1 份”按全年计</td>
+</tr>
+<tr>
+<td>维度一 A 档条件</td>
+<td>“至少 1 项提案进入验证阶段”即可支持 A</td>
+<td>必须“完成验证并结案”</td>
+</tr>
+<tr>
+<td>结果用途</td>
+<td>只发给本人，不进入发放</td>
+<td>填入《参数》页，决定发放</td>
+</tr>
+<tr>
+<td>分成金额</td>
+<td>不计算</td>
+<td>按《提案》表“预计分成”列，经财务确认后发放</td>
+</tr>
+</tbody>
+</table>
+<p>季度快照的目的是让每个人提前知道自己在哪一档，并在下一季度补上缺的记录。年度评定不接受补交评估期已过的月度工作单。</p></body></html>
